@@ -16,13 +16,14 @@ create table ses (
 -- connectivity matrix location
 create table rest (
     -- likely subj_ymd
-    mat_file text primary key,
     ses_id varchar(50) not null,
     study varchar(10),
     preproc varchar(20),
     atlas varchar(10),
 
     -- metrics --
+    mat_file text,
+
     -- motion
     motion_n_cens float,
     motion_pct_cens float
