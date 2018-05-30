@@ -4,12 +4,9 @@
 create table ses (
    -- likely subj_ymd
    ses_id varchar(50) primary key, 
-   ymd varchar(8),
-   timepoint integer,
    -- stuff that is repeated
    subj varchar(50),
    age float,
-   dob date,
    sex varchar(1)
 );
 
@@ -20,6 +17,9 @@ create table rest (
     study varchar(10),
     preproc varchar(20),
     atlas varchar(10),
+
+    -- properties
+    ntr integer,
 
     -- metrics --
     mat_file text,
