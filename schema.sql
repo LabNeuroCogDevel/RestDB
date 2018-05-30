@@ -4,6 +4,7 @@
 create table ses (
    -- likely subj_ymd
    ses_id varchar(50) primary key, 
+   study varchar(10),  -- delete from ses where study = ...
    -- stuff that is repeated
    subj varchar(50),
    age float,
@@ -22,11 +23,11 @@ create table rest (
     ntr integer,
 
     -- metrics --
-    mat_file text,
+    adj_file text,
 
     -- motion
     motion_n_cens float,
-    motion_pct_cens float
+    motion_pct_cens float,
     motion_path text,
 
     -- fd 
