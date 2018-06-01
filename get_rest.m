@@ -6,12 +6,13 @@
 %  get_rest(dbcn,'study like "cog" and preproc like "aroma"') % cog aroma
 %
 function t = get_rest(dbcn,varargin)
-  varnames = {'ses_id','study','preproc','atlas','ntr','adj_file',...
+  varnames = {'ses_id','study','preproc','atlas','ntr','ts_file',...
+              'adj_file',...
               'motion_n_cens','motion_pct_cens','motion_path','fd_mean',...
               'fd_median','fd_n_cens','fd_path','dvars_mean',...
               'dvars_median','dvars_n_cens','dvars_path'};
   
-  sqlquery = 'select ses.subj, ses.age, ses.sex, rest.* from rest natural join ses';
+  sqlquery = 'select ses.subj, ses.age, ses.sex, ses.dx, rest.* from rest natural join ses';
   if ~isempty(varargin)
         sqlquery = [sqlquery ' where ' varargin{1}];
   end
@@ -19,5 +20,5 @@ function t = get_rest(dbcn,varargin)
   if isempty(ses)
       ses = cell(0,length(varnames)+3);
   end
-  t = cell2table(ses,'VariableNames',{'subj', 'age','sex',varnames{:}});  
+  t = cell2table(ses,'VariableNames',{'subj', 'age','sex','dx', varnames{:}});  
 end

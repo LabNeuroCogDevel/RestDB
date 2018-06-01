@@ -42,6 +42,8 @@ for diri = 1:length(dirs)
     ses.subj = subj;
     ses.age = age;
     ses.sex = gender{1};
+    ses.dx = 'control';
+    
     fprintf(1, '============================================================================================================================================\n');
     fprintf(1, '%d/%d\n', diri, length(dirs));
     ses
@@ -72,13 +74,21 @@ for diri = 1:length(dirs)
                     else
                         adjFile = '';
                     end
-
+                    tsFiles = dir(fullfile(scandir, sprintf('%s_%s_ts*.txt', subjdate, atlases{atlasi})));
+                    if length(tsFiles)>=1
+                        tsFile = fullfile(tsFiles(1).folder, tsFiles(1).name);
+                    else
+                        tsFile = '';
+                    end
+                    
                 case 'aroma'
                     scandir = fullfile('/Volumes/Zeus/preproc/reward_rest/MHRest_aroma/', subjdate, 'rest');
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_20.1d';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subjdate, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
+
                 case 'aroma_gsr'
                     scandir = fullfile('/Volumes/Zeus/preproc/reward_rest/MHRest_aroma/', subjdate, 'rest');
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_20.1d';
@@ -86,6 +96,7 @@ for diri = 1:length(dirs)
                     dvarsFile = 'motion_info/dvars.txt';
                     %/data/Hera/preproc/cog_task/rest_spikemin/11217_20131022/snip/11217_20131022_GordonHarOx_adj_gsr_pearson.txt
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_gsr_pearson.txt', subjdate, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
             end
 
 
@@ -126,6 +137,8 @@ for diri = 1:length(dirs)
             rest.ntr = nVols;
 
             rest.adj_file = adjFile;
+            rest.ts_file = tsFile;
+
             rest.motion_n_cens = badVols;
             rest.motion_pct_cens = pctBadVols;
             rest.motion_path = fullfile(scandir, censorFile);

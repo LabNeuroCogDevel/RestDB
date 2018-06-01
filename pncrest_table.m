@@ -2,7 +2,7 @@
 
 %% atlases
 atlases = {'GordonHarOx', 'hpc_apriori_atlas_11'};
-pipelines = {'mhrestbase','aroma','aroma_gsr'};
+pipelines = {'mhrestbase','aroma'};
 
 fd_thresh = 0.3;
 dvars_thresh = 20;
@@ -11,11 +11,17 @@ dvars_thresh = 20;
 usable = readtable('/Volumes/Zeus/Finn/PNC/final_PNC_controls.txt');
 agesTable = readtable('/Volumes/Zeus/Finn/PNC/scripts/pnc_ages_sex.csv', 'Delimiter', ',','ReadVariableNames',true);
 
+dirs = dir(fullfile('/Volumes/Zeus/Finn/PNC/subjs/6*'));
+
 allses=[];
 allrest=[];
 
-for subji = 1:size(usable,1)
-    subj = num2str(usable(subji,:).SUBJID);
+for diri = 1:length(dirs)
+    thisdir = dirs(diri);
+%    subj = num2str(usable(subji,:).SUBJID);
+    % Load session info into ses
+    subj = thisdir.name;
+    
     vdate = NaN;
     
     % get age
@@ -34,8 +40,15 @@ for subji = 1:size(usable,1)
     ses.subj = subj;
     ses.age = age;
     ses.sex = gender{1};
+    
+    if any(str2double(subj) == usable.SUBJID)
+        ses.dx = 'control';
+    else
+        ses.dx = 'na';
+    end
+    
     fprintf(1, '============================================================================================================================================\n');
-    fprintf(1, '%d/%d\n', subji, size(usable,1));
+    fprintf(1, '%d/%d\n', diri, size(dirs,1));
     
     ses
     %f = fieldnames(ses); for fi = 1:length(f); fprintf(1, '%s: %s\n', f{fi}, class(ses.(f{fi}))); end; return
@@ -65,19 +78,27 @@ for subji = 1:size(usable,1)
                     else
                         adjFile = '';
                     end
-
+                    tsFiles = dir(fullfile(scandir, sprintf('%s_%s_ts*.txt', susubjbjdate, atlases{atlasi})));
+                    if length(tsFiles)>=1
+                        tsFile = fullfile(tsFiles(1).folder, tsFiles(1).name);
+                    else
+                        tsFile = '';
+                    end
                 case 'aroma'
                     scandir = fullfile('/Volumes/Zeus/preproc/PNC_rest/aroma_nogsr',subj,'preproc');
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_20.1d';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subj, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subj, atlases{atlasi}));
+
                 case 'aroma_gsr'
                     scandir = fullfile('/Volumes/Zeus/preproc/PNC_rest/aroma_gsr',subj,'preproc');
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_20.1d';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subj, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subj, atlases{atlasi}));
             end
 
 
@@ -118,6 +139,8 @@ for subji = 1:size(usable,1)
             rest.ntr = nVols;
 
             rest.adj_file = adjFile;
+            rest.ts_file = tsFile;
+
             rest.motion_n_cens = badVols;
             rest.motion_pct_cens = pctBadVols;
             rest.motion_path = fullfile(scandir, censorFile);

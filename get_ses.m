@@ -11,5 +11,5 @@ function t = get_ses(dbcn,varargin)
   if isempty(ses)
       ses = cell(0,5);
   end
-  t = cell2table(ses,'VariableNames',{'ses_id','study','subj','age','sex'});
+  t = cell2table(ses,'VariableNames',{'ses_id','study','subj','age','sex','dx'});
 end

@@ -42,6 +42,8 @@ for diri = 1:length(dirs)
     ses.subj = subj;
     ses.age = age;
     ses.sex = gender;
+    ses.dx = 'control';
+    
     fprintf(1, '============================================================================================================================================\n');
     fprintf(1, '%d/%d\n', diri, length(dirs));
     ses
@@ -66,11 +68,18 @@ for diri = 1:length(dirs)
                     fdFile = 'fd.txt';
                     dvarsFile = 'dvars.txt';
                     %/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_adj.txt
+                    %/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_ts.txt
                     adjFiles = dir(fullfile(scandir, sprintf('%s_%s_adj*.txt', subjdate, atlases{atlasi})));
                     if length(adjFiles)>=1
                         adjFile = fullfile(adjFiles(1).folder, adjFiles(1).name);
                     else
                         adjFile = '';
+                    end
+                    tsFiles = dir(fullfile(scandir, sprintf('%s_%s_ts*.txt', subjdate, atlases{atlasi})));
+                    if length(tsFiles)>=1
+                        tsFile = fullfile(tsFiles(1).folder, tsFiles(1).name);
+                    else
+                        tsFile = '';
                     end
                     
                     
@@ -98,13 +107,16 @@ for diri = 1:length(dirs)
                     fdFile = 'fd.txt';
                     dvarsFile = 'dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subjdate, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
                 case 'aroma_gsr'
                     scandir = fullfile('/Volumes/Hera/preproc/cog_task/rest_spikemin', subjdate, 'snip');
                     censorFile = 'motion_info/snip_censor.1D';
                     fdFile = 'fd.txt';
                     dvarsFile = 'dvars.txt';
                     %/data/Hera/preproc/cog_task/rest_spikemin/11217_20131022/snip/11217_20131022_GordonHarOx_adj_gsr_pearson.txt
+                    %/data/Hera/preproc/cog_task/rest_spikemin/11217_20131022/snip/11217_20131022_GordonHarOx_ts_gsr.txt
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_gsr_pearson.txt', subjdate, atlases{atlasi}));
+                    tsFile = fullfile(scandir, sprintf('%s_%s_ts_gsr.txt', subjdate, atlases{atlasi}));
             end
 
 
@@ -112,6 +124,8 @@ for diri = 1:length(dirs)
                 fprintf(1, 'Cannot find adjFile %s for atlas=%s, pipeline=%s\n', adjFile, atlases{atlasi}, pipelines{pipei});
                 continue
             end
+            
+            
             
             % get censored volumes
             thisCensorFile = fullfile(scandir, censorFile);
@@ -145,6 +159,8 @@ for diri = 1:length(dirs)
             rest.ntr = nVols;
 
             rest.adj_file = adjFile;
+            rest.ts_file = tsFile;
+            
             rest.motion_n_cens = badVols;
             rest.motion_pct_cens = pctBadVols;
             rest.motion_path = fullfile(scandir, censorFile);

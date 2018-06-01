@@ -8,7 +8,8 @@ create table ses (
    -- stuff that is repeated
    subj varchar(50),
    age float,
-   sex varchar(1)
+   sex varchar(1),
+   dx varchar(10)
 );
 
 -- connectivity matrix location
@@ -23,7 +24,8 @@ create table rest (
     ntr integer,
 
     -- metrics --
-    adj_file text,
+    ts_file text, -- location of timesieres nifti
+    adj_file text, -- location of corr mat
 
     -- motion
     motion_n_cens float,

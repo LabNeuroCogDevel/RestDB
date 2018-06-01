@@ -20,7 +20,7 @@ for mati = 1:length(matfiles)
     % get e.g. 'cog' from 'cogrest.mat' (by removing last 8 character of
     % filename)
     studyname=matfiles(mati).name(1:end-8);
-    dips(studyname)
+    disp(studyname)
     % add to db with study name for ses, also remove duplicates
     mat_to_db(f,dbcn,studyname)
 end
