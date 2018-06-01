@@ -13,7 +13,7 @@ function mat_to_db(matfile, dbcn,study)
   insert(dbcn,'ses',m.allses.Properties.VariableNames,m.allses(i,:) );
 
   % warn about not ts_file
-  if ~ismember('ts_file',fieldnames(m.allses))
+  if ~ismember('ts_file',fieldnames(m.allrest))
     fprintf('\trest does not have ts_file column. fix in %srest_table.m and run redo_study(''%s'')\n',study,study);
     m.allrest.ts_file = repmat({'DNE'},[height(m.allrest) 1]);
   end
