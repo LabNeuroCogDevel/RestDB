@@ -1,3 +1,8 @@
+20180611 
+  working R query helper: 
+    source('read_adj.R')
+    restdb_query(study='pnc',atlas='GordonHarOx') %>% head(10) %>% db_to_2dmat
+
 20180530 
   add matlab helpers, cleaned up schema
     - get_rest -- fetch rest info optionally with sql query where statement
