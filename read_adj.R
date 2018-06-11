@@ -8,6 +8,9 @@ library(dplyr)
 #   source('read_adj.R')
 #   restdb_query(study,atlas) %>% db_to_2dmat
 #
+# SEE ALSO:
+#  restdb_info()  # db study,atlas, and preproc info
+#  restdb_example # example usage
 
 restdb_example <- function() {
    # see aviable  studies and atalses
@@ -15,7 +18,7 @@ restdb_example <- function() {
 
    # query rest db for adj matrix of pnc w/ atlas hpc...
    # only take 100 for this example
-   d <- restdb_query("pnc", "hpc_pfc_brainstem_rstg")  %>%
+   d <- restdb_query("pnc", "GordonHarOx") %>%
       head(n=100)
    print("db data")
    head(d, n=2) %>% print
@@ -68,7 +71,7 @@ db_to_2dmat <- function(d) {
   return(mats)
 }
 
-restdb_query <- function(study, atlas,
+restdb_query <- function(study="%", atlas="%", preproc="%", dx="%",
                          dbpath="/Volumes/Hera/Projects/RestDB/rest.db"){
 
   # load up database and table (quick, "lazy load")
@@ -76,17 +79,28 @@ restdb_query <- function(study, atlas,
   rest <- tbl(restdb, "rest")
   ses  <- tbl(restdb, "ses")
 
-  rest %>%
-   filter(study == "pnc", atlas == "GordonHarOx" ) %>%
-   inner_join(ses, by="ses_id") %>%
-   select(ses_id, age, sex, adj_file) %>%
+  # N.B. %lik% uses sql (allows % wildcard)
+  #     '!! study' means use the 'study' var given to function
+  #                not the dataframe column 'study'
+  out <- rest %>%
+   filter(study %like% !! study,
+          preproc %like% !! preproc,
+          atlas %like% !! atlas) %>%
+   inner_join(ses, by="ses_id", suffix = c(".x", "")) %>%
+   filter(dx %like% !! dx) %>%
+   select(ses_id, age, sex, dx, fd_mean, preproc, study, adj_file, ts_file) %>%
    collect # store in R, no longer lazy (slow)
 }
 
 restdb_info <-function(dbpath="/Volumes/Hera/Projects/RestDB/rest.db"){
   restdb <- src_sqlite(dbpath)
-  rest <- tbl(restdb, "rest")
   showme <- function(x) x%>%collect%>%unlist%>%paste(collapse=", ")%>%cat("\n")
+
+  ses <- tbl(restdb, "ses")
+  cat("dx: \n\t")
+  ses %>% summarise(distinct(dx)) %>% showme
+
+  rest <- tbl(restdb, "rest")
   # get list of all studies
   cat("studies: \n\t")
   rest %>% summarise(distinct(study)) %>% showme
@@ -94,4 +108,6 @@ restdb_info <-function(dbpath="/Volumes/Hera/Projects/RestDB/rest.db"){
   cat("atlases: \n\t")
   rest %>% summarise(distinct(atlas)) %>% showme
   # GordonHarOx, hpc_pfc_brainstem_rstg, hpc_apriori_atlas_11
+  cat("preproc: \n\t")
+  rest %>% summarise(distinct(preproc)) %>% showme
 }
