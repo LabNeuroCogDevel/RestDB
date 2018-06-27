@@ -24,8 +24,9 @@ create table rest (
     ntr integer,
 
     -- metrics --
-    ts_file text, -- location of timesieres nifti
-    adj_file text, -- location of corr mat
+    adj_file text, -- ROITempCor: location of corr mat
+    ts_file text, -- ROITempCor: location of timesieres text
+    ts4d text,  --- not set 20180622, nifti
 
     -- motion
     motion_n_cens float,
@@ -48,3 +49,17 @@ create table rest (
     foreign key (ses_id) references ses (ses_id)
 );
 
+create table tsnr (
+    ses_id varchar(50) not null,
+    study varchar(10),
+    preproc varchar(20),
+
+    isfinal boolean default false,
+    roi text, -- default gm
+    prefix text,
+    input text,
+    step numeric,
+    tsnr  numeric,
+    -- relation to session table
+    foreign key (ses_id) references ses (ses_id)
+);
