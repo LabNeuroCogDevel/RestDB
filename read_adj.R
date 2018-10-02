@@ -68,7 +68,16 @@ adj_to_lowervec <- function(f) {
 db_to_2dmat <- function(d) {
   mats <- do.call(cbind, lapply(d$adj_file, adj_to_lowervec))
   colnames(mats) <- d$ses_id
+  n <- nrow(data.table::fread(d$adj_file[1],header=F,sep=" "))
+  #todo 
+  rownames(mats) <-  apply(which(lower.tri(matrix(1:n**2,nrow=n)),arr.ind=T),paste,MARGIN=1,collapse="_")
   return(mats)
+}
+
+restdb_widedf <- function(...){
+   d <- restdb_query(...)
+   m <- t(db_to_2dmat(d))
+   cbind(d, m)
 }
 
 restdb_query <- function(study="%", atlas="%", preproc="%", dx="%",
