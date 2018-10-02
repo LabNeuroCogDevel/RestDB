@@ -1,7 +1,7 @@
 %function data = m01_loadAdj_cogrest
 
 %% atlases
-atlases = {'GordonHarOx', 'hpc_pfc_brainstem_rstg'};
+atlases = {'GordonHarOx', 'hpc_pfc_brainstem_rstg','CogEmoROIs'};
 pipelines = {'mhrestbase','aroma','aroma_gsr'};
 
 start_idx = [0 115 228]+1; % add 1 since TRs are 0-based, but txt files are 1-based
@@ -67,6 +67,7 @@ for diri = 1:length(dirs)
                     censorFile = 'censor_custom_fd_0.3_dvars_20.1d';
                     fdFile = 'fd.txt';
                     dvarsFile = 'dvars.txt';
+                    fourdFile = fullfile(scandir, 'chunk_concat.nii.gz');
                     %/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_adj.txt
                     %/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_ts.txt
                     adjFiles = dir(fullfile(scandir, sprintf('%s_%s_adj*.txt', subjdate, atlases{atlasi})));
@@ -108,6 +109,7 @@ for diri = 1:length(dirs)
                     dvarsFile = 'dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subjdate, atlases{atlasi}));
                     tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
+                    fourdFile = fullfile(scandir, 'brnaswdktm_func_5.nii.gz');
                 case 'aroma_gsr'
                     scandir = fullfile('/Volumes/Hera/preproc/cog_task/rest_spikemin', subjdate, 'snip');
                     censorFile = 'motion_info/snip_censor.1D';
@@ -117,6 +119,7 @@ for diri = 1:length(dirs)
                     %/data/Hera/preproc/cog_task/rest_spikemin/11217_20131022/snip/11217_20131022_GordonHarOx_ts_gsr.txt
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_gsr_pearson.txt', subjdate, atlases{atlasi}));
                     tsFile = fullfile(scandir, sprintf('%s_%s_ts_gsr.txt', subjdate, atlases{atlasi}));
+                    fourdFile = fullfile(scandir, 'bgrnaswdktm_func_5.nii.gz');
             end
 
 
@@ -175,6 +178,8 @@ for diri = 1:length(dirs)
             rest.dvars_n_cens = dvars_n_cens;
             rest.dvars_path = thisDVARSFile;
 
+            rest.ts4d = fourdFile;
+            
             rest;
             % build array strcut of all rests to turn into table
             allrest=[allrest rest];

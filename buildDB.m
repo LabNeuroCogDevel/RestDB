@@ -3,7 +3,7 @@ function buildDB()
 %% iniailze mats
 % this would take a long time. done once. dont need to do again
 % ...until there is new data. but maybe just do one of them
-%build_db_mats()
+build_db_mats()
 
 %% open db
 dbcn = sqlite('rest.db');

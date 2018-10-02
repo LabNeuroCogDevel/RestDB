@@ -1,7 +1,7 @@
 %function data = m01_loadAdj_cogrest
 
 %% atlases
-atlases = {'GordonHarOx'};
+atlases = {'GordonHarOx','CogEmoROIs'};
 pipelines = {'mhrestbase','aroma','aroma_gsr'};
 
 fd_thresh = 0.3;
@@ -71,6 +71,7 @@ for diri = 1:length(dirs)
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_24.1d';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';
+                    fourdFile = fullfile(scandir, 'brnswudktm_func_5.nii.gz');
                     %/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_adj.txt
                     adjFiles = dir(fullfile(scandir, sprintf('%s_%s_adj*.txt', subjdate, atlases{atlasi})));
                     if length(adjFiles)>=1
@@ -91,6 +92,8 @@ for diri = 1:length(dirs)
                     dvarsFile = 'motion_info/dvars.txt';
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_pearson.txt', subjdate, atlases{atlasi}));
                     tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
+                    fourdFile = fullfile(scandir, 'brnaswudktm_func_4.nii.gz');
+
                 case 'aroma_gsr'
                     scandir = fullfile(basedir, 'MHRest_FM_ica', subjdate);
                     censorFile = 'motion_info/censor_custom_fd_0.3_dvars_24.1d';
@@ -99,6 +102,7 @@ for diri = 1:length(dirs)
                     %/data/Hera/preproc/cog_task/rest_spikemin/11217_20131022/snip/11217_20131022_GordonHarOx_adj_gsr_pearson.txt
                     adjFile = fullfile(scandir, sprintf('%s_%s_adj_gsr_pearson.txt', subjdate, atlases{atlasi}));
                     tsFile = fullfile(scandir, sprintf('%s_%s_ts.txt', subjdate, atlases{atlasi}));
+                    fourdFile = fullfile(scandir, 'bgrnaswudktm_func_4.nii.gz');
             end
 
 
@@ -154,6 +158,7 @@ for diri = 1:length(dirs)
             rest.dvars_median = median(dvars);
             rest.dvars_n_cens = dvars_n_cens;
             rest.dvars_path = thisDVARSFile;
+            rest.ts4d = fourdFile;
 
             %rest
             % build array strcut of all rests to turn into table
