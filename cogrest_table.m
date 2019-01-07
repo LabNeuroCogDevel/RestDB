@@ -1,7 +1,7 @@
 %function data = m01_loadAdj_cogrest
 
 %% atlases
-atlases = {'GordonHarOx', 'hpc_pfc_brainstem_rstg','CogEmoROIs'};
+atlases = atlas_list('cog'); % {'GordonHarOx', 'hpc_pfc_brainstem_rstg','CogEmoROIs'};
 pipelines = {'mhrestbase','aroma','aroma_gsr'};
 
 start_idx = [0 115 228]+1; % add 1 since TRs are 0-based, but txt files are 1-based
@@ -193,13 +193,3 @@ end
 % make arrays into tables
 allses=struct2table(allses);
 allrest=struct2table(allrest);
-
-    
-        
-
-
-        
-        
-        
-
-        

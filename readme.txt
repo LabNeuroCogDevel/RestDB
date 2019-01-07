@@ -1,3 +1,25 @@
+# Add atlas
+  0. create nii roi mask
+  1. create adj files for all pipelines: e.g. /Volumes/Zeus/preproc/scripts_finn/getAllAdj_ashley_vmpfc-str-vta.sh
+        -> /Volumes/Zeus/preproc/scripts_finn/cog/08_extractROIs_R.sh
+        -> ROI_TempCorr.R 
+  2. add atlas names to atlas_list.m
+  4. run `make` (remake mat files, populate db: ./00_create.bash; calc tsnr: gen_tsnr.bash)
+
+# LOG
+
+20190107
+  added atlas_list.m to list all atlases. used by *rest_table.m
+20181002
+  added CogEmoROIs atals (FC)
+  added R `restdb_widedf` function ot get roi-roi and subject info as one wide data frame
+
+20180628
+  tsnr: add script to generate final tsnr text file for all, and script to add the value into the db
+  created Makefile
+  update get_rest.m to include tsnr
+  (update /opt/ni_tools/fmri_processing_scripts/ppf_tsnr with -O "only this file" option)
+
 20180611 
   working R query helper: 
     source('read_adj.R')

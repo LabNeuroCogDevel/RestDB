@@ -20,9 +20,9 @@ function t = get_rest(dbcn,varargin)
              restselect ,...
              ' case when tsnr.tsnr > 0 then tsnr.tsnr else -1 end',...
              ' from rest natural join ses', ...
-             ' left join tsnr on tsnr.isfinal=1 and tsnr.ses_id = rest.ses_id and tsnr.preproc = rest.preproc'];
+             ' left join tsnr on tsnr.isfinal=1 and tsnr.ses_id = rest.ses_id and tsnr.preproc = rest.preproc and tsnr.study = rest.study'];
   if ~isempty(varargin)
-        sqlquery = [sqlquery ' and ' varargin{1}];
+        sqlquery = [sqlquery ' where ' varargin{1}];
   end
   ses = fetch(dbcn,sqlquery);
   if isempty(ses) || all(size(ses)==0)

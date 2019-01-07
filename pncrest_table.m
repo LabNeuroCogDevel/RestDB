@@ -1,7 +1,7 @@
 %function data = m01_loadAdj_cogrest
 
 %% atlases
-atlases = {'GordonHarOx', 'hpc_apriori_atlas_11','hpc_pfc_brainstem_rstg','CogEmoROIs'};
+atlases = atlas_list('pnc'); %  {'GordonHarOx', 'hpc_apriori_atlas_11','hpc_pfc_brainstem_rstg','CogEmoROIs'};
 pipelines = {'mhrestbase','aroma','aroma_gsr'};
 
 fd_thresh = 0.3;

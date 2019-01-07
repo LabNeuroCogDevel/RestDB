@@ -3,12 +3,13 @@
 atlas = 'GordonHarOx';
 pipeline = 'aroma_gsr';
 study = '%';
+%study = 'cog OR pet OR rew';
 
 clear r r_vec lowerInds
 
 if 1
     dbcn = sqlite('rest.db');
-    tbl = get_rest(dbcn,sprintf('study like "%s" and preproc like "%s" and atlas like "%s" and dx like "control"', study, pipeline, atlas));
+    tbl = get_rest(dbcn,sprintf('rest.study like "%s" and rest.preproc like "%s" and atlas like "%s" and dx like "control"', study, pipeline, atlas));
 
     %tbl = get_rest(dbcn,sprintf('study like "%s" and preproc like "%s" and atlas like "%s"', study, pipeline, atlas));
 

@@ -1,7 +1,7 @@
 %function data = m01_loadAdj_cogrest
 
 %% atlases
-atlases = {'GordonHarOx','CogEmoROIs'};
+atlases = atlas_list('rew'); % {'GordonHarOx','CogEmoROIs'};
 pipelines = {'mhrestbase','aroma','aroma_gsr'};
 
 fd_thresh = 0.3;

@@ -14,5 +14,5 @@ sqlite3 rest.db < schema.sql
 chmod g+w rest.db
 
 # might need to regenerate mat/*rest.mat files first (slow!)
-echo "NOT RUNNING:   matlab -nodisplay -r \"try, build_db_mats(), end; quit()\""
+#echo "NOT RUNNING:   matlab -nodisplay -r \"try, build_db_mats(), end; quit()\"" # actually run in buildDB
 matlab -nodisplay -r "try, buildDB, end; quit()"

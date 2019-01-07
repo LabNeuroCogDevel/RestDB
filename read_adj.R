@@ -40,10 +40,13 @@ restdb_example <- function() {
    # num [1:345, 1:345]
 }
 
+size_from_lower <- function(v) {
+   ceiling(sqrt(8*length(v) + 1) +1) /2
+}
 
 undo.lower <- function(v) {
    # use lower tri length to get number of symc matrix nrows (n rois)
-   nr <- ceiling(sqrt(8*length(v) + 1) +1) /2
+   nr <- size_from_lower(v)
    # build NA matrix
    m <- matrix(NA, nrow=nr, ncol=nr)
    # fill lowr tri
@@ -68,16 +71,31 @@ adj_to_lowervec <- function(f) {
 db_to_2dmat <- function(d) {
   mats <- do.call(cbind, lapply(d$adj_file, adj_to_lowervec))
   colnames(mats) <- d$ses_id
-  n <- nrow(data.table::fread(d$adj_file[1],header=F,sep=" "))
-  #todo 
-  rownames(mats) <-  apply(which(lower.tri(matrix(1:n**2,nrow=n)),arr.ind=T),paste,MARGIN=1,collapse="_")
+
+  # make 'roi_roi' row names
+  n <- size_from_lower(mats[, 1])
+  roi_roi <-
+     matrix(T, ncol=n, nrow=n) %>% # matrix size roi x roi
+     lower.tri() %>%               # T/F for just the lower tri
+     which(arr.ind=T) %>%          # array index
+     apply(paste, MARGIN=1, collapse="_") # 1_2, 1_3, ...
+  rownames(mats) <- roi_roi
+
   return(mats)
 }
 
+#' restdb_widedf
+#' @description
+#' combine data from db query with roi-roi correlation as columns
+#' @examples
+#'  d <- restdb_widedf(preproc='aroma',dx='control',atlas='CogEmoROIs')
+#'  d %>% select(ses_id,age,matches("\\d_")) %>% head
 restdb_widedf <- function(...){
    d <- restdb_query(...)
    m <- t(db_to_2dmat(d))
-   cbind(d, m)
+   r <- cbind(d, m)
+   rownames(r) <- NULL
+   return(r)
 }
 
 restdb_query <- function(study="%", atlas="%", preproc="%", dx="%",
