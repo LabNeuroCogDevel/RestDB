@@ -22,7 +22,16 @@ function t = get_rest(dbcn,varargin)
              ' from rest natural join ses', ...
              ' left join tsnr on tsnr.isfinal=1 and tsnr.ses_id = rest.ses_id and tsnr.preproc = rest.preproc and tsnr.study = rest.study'];
   if ~isempty(varargin)
-        sqlquery = [sqlquery ' where ' varargin{1}];
+        whereclause = varargin{1};
+        %% fix issues with needed rest/tsr table specified
+        % whereclause = 'study rest.study "mystudy" "foopreprocbar" preproc tstr.preproc';
+        whereclause = regexprep(whereclause,'(^|[^.])\<(study|preproc)\>','$1rest.$2');
+        %             = '*rest.study* rest.study "mystudy" "foopreprocbar" *rest.preproc* tstr.preproc'
+        if ~startsWith(whereclause, varargin{1})
+           warning('unspecified table for study/preproc columns. Prepended "rest." to column names in your query') 
+        end
+
+        sqlquery = [sqlquery ' where ' whereclause];
   end
   ses = fetch(dbcn,sqlquery);
   if isempty(ses) || all(size(ses)==0)
