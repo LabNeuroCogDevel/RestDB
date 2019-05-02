@@ -7,9 +7,10 @@ pipelines = {'mhrestbase','aroma','aroma_gsr'};
 fd_thresh = 0.3;
 dvars_thresh = 24;
 
-%% get directory list
-dirs = dir(fullfile('/Volumes/Zeus/preproc/petrest_rac*/brnsuwdktm_rest/1*'));
-%/Volumes/Zeus/preproc/reward_rest/MHRest_aroma/10646_20090410/rest/
+%% get directory list - petrest_{rac1,rac2,dtbz}
+dirs = [ dir(fullfile('/Volumes/Zeus/preproc/petrest_*/brnsuwdktm_rest/1*')); ...
+         dir(fullfile('/Volumes/Zeus/preproc/petrest_dtbz/MHRest_FM_ica/1*')) ...
+]
 
 allses=[];
 allrest=[];
