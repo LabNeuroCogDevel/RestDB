@@ -44,5 +44,5 @@ delete from tsnr;
 EOF
 
 # check on it
-sqlite3 rest.db 'select study,preproc,count(*) from tsnr where isfile = 1 group by study,preproc desc limit 10;'
+sqlite3 rest.db 'select study,preproc,count(*) from tsnr  group by study,preproc limit 10 ;'
 sqlite3 rest.db 'select * from tsnr order by tsnr desc limit 10;'
