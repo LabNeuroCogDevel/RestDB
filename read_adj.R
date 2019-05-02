@@ -70,6 +70,8 @@ adj_to_lowervec <- function(f) {
 
 db_to_2dmat <- function(d) {
   mats <- do.call(cbind, lapply(d$adj_file, adj_to_lowervec))
+  if (is.null(mats))
+     stop("nothing read in, is db_to_2dmat input empty? are files mounted?")
   colnames(mats) <- d$ses_id
 
   # make 'roi_roi' row names
