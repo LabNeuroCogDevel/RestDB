@@ -1,4 +1,8 @@
 %function data = m01_loadAdj_cogrest
+%% Notes
+% * used by build_db_mats (from 00_createdb.bash)
+% * creates 'allses' and 'allrest' variables
+% * set DEBUG=1 for more verbose output
 
 %% atlases
 atlases = atlas_list('pet'); % {'GordonHarOx','CogEmoROIs','vmpfcstrvta20181221'}
@@ -10,7 +14,9 @@ dvars_thresh = 24;
 %% get directory list - petrest_{rac1,rac2,dtbz}
 dirs = [ dir(fullfile('/Volumes/Zeus/preproc/petrest_*/brnsuwdktm_rest/1*')); ...
          dir(fullfile('/Volumes/Zeus/preproc/petrest_dtbz/MHRest_FM_ica/1*')) ...
-]
+];
+fprintf('== running petrest_table for %d folders and %d atlases ==\n',...
+    length(dirs), length(atlases))
 
 allses=[];
 allrest=[];
@@ -22,12 +28,20 @@ agesTable = readtable('/Volumes/Phillips/mMR_PETDA/scripts/merged_data.csv', 'De
 %%
 for diri = 1:length(dirs)
     thisdir = dirs(diri);
-    
+    if exist('DEBUG','var') && DEBUG==1
+        fprintf('Looking to #%d: %s/%s\n', diri, thisdir.folder,thisdir.name)
+    end
+
     % Load session info into ses
     subjdate = thisdir.name;
     sdparts = strsplit(subjdate, '_');
+    if length(sdparts) < 2
+        warning('bad folder name %s/%s', thisdir.folder, thisdir.name)
+        continue
+    end
     subj = sdparts{1};
     vdate = sdparts{2};
+    
     
     % get age
     ageIdx = find(agesTable.lunaid==str2double(subj) & strcmp(agesTable.vdate, vdate));
@@ -49,9 +63,14 @@ for diri = 1:length(dirs)
     ses.sex = gender{1};
     ses.dx = 'control';
     
-    fprintf(1, '============================================================================================================================================\n');
-    fprintf(1, '%d/%d\n', diri, length(dirs));
-    ses
+    
+    if mod(diri,20) == 0
+        fprintf(1, '%s: %d/%d\n',...
+            datetime('now','Format','HH:mm:ss.SSS'), diri, length(dirs));
+    end
+    if exist('DEBUG','var') && DEBUG==1
+        disp(ses)
+    end
     %f = fieldnames(ses); for fi = 1:length(f); fprintf(1, '%s: %s\n', f{fi}, class(ses.(f{fi}))); end; return
     
     % build struct array that we can later turn into a table
@@ -108,8 +127,14 @@ for diri = 1:length(dirs)
 
 
             if ~exist(adjFile, 'file')
-                fprintf(1, 'Cannot find adjFile %s for atlas=%s, pipeline=%s\n', adjFile, atlases{atlasi}, pipelines{pipei});
+                if exist('DEBUG','var') && DEBUG==1
+                    fprintf(1, '\tCannot find adjFile %s for atlas=%s, pipeline=%s\n', adjFile, atlases{atlasi}, pipelines{pipei});
+                end
                 continue
+            end
+            
+            if exist('DEBUG','var') && DEBUG==1
+                fprintf('\tadding %s\n', adjFile)
             end
             
             % get censored volumes
@@ -174,13 +199,3 @@ end
 % make arrays into tables
 allses=struct2table(allses);
 allrest=struct2table(allrest);
-
-    
-        
-
-
-        
-        
-        
-
-        
