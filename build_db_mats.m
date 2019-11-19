@@ -10,7 +10,7 @@ function build_db_mats()
 
     % 20190725 -- studies below are finished. dont need to be rerun
     % can just use the mats/*.mat file
-    return
+    %return
 
     cogrest_table 
     save('mats/cogrest.mat','allses','allrest')

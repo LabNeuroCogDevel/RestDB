@@ -24,6 +24,7 @@ allrest=[];
 % load ages
 %agesTable = readtable('/Volumes/Phillips/mMR_PETDA/scripts/txt/subjinfo_agesexids.csv', 'Delimiter', '\t','ReadVariableNames',true);
 agesTable = readtable('/Volumes/Phillips/mMR_PETDA/scripts/merged_data.csv', 'Delimiter', ',','ReadVariableNames',true);
+agesTable.lunaid = cellfun(@str2double, agesTable.lunaid) % 20191107 -- at somepoint these became strings. need as num for comp below
 
 %%
 for diri = 1:length(dirs)
