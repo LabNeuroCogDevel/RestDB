@@ -109,8 +109,10 @@ for diri = 1:length(dirs)
 
 
             if ~exist(adjFile, 'file')
-                fprintf(1, 'Cannot find adjFile %s\n', adjFile);
+                fprintf(1, 'Cannot find adjFile %s (pipe %s, atlas %s)\n', adjFile, pipelines{pipei}, atlases{atlasi});
                 continue
+            else
+                fprintf(1, 'Running adjFile %s (pipe %s, atlas %s)\n', adjFile, pipelines{pipei}, atlases{atlasi});
             end
             
             % get censored volumes
