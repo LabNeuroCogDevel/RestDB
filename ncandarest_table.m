@@ -9,7 +9,8 @@ dvars_thresh = Inf;
 
 %% subject list
 alcUse = readtable('/Volumes/Zeus/preproc/scripts_finn/ncanda/nolowinformation_NCANDA20191118.csv', 'Delimiter', ',','ReadVariableNames',true);
-demo = readtable('/Volumes/Zeus/NCANDA_Behavioral/Data/NCANDA_RELEASE_3Y_REDCAP_MEASUREMENTS_V01/summaries/redcap/demographics.csv', 'Delimiter', ',','ReadVariableNames',true);
+%demo = readtable('/Volumes/Zeus/NCANDA_Behavioral/Data/NCANDA_RELEASE_3Y_REDCAP_MEASUREMENTS_V01/summaries/redcap/demographics.csv', 'Delimiter', ',','ReadVariableNames',true);
+demo = readtable('/Volumes/Hera/Raw/Datasets/NCANDA/followup_4y/NCANDA_RELEASE_4Y_REDCAP_MEASUREMENTS_V02/summaries/redcap/demographics.csv', 'Delimiter', ',','ReadVariableNames',true);
 
 dirs = dir(fullfile('/Volumes/Hera/preproc/ncanda_siemens/MHRest_ncanda/S*_*'));
 
@@ -56,17 +57,20 @@ for diri = 1:length(dirs)
     % get dx
     dxIdx = find( strcmp(alcUse.subject, sprintf('NCANDA_%s',subjid)) & strcmp(alcUse.visit, vname) );
     if length(dxIdx) == 1
-        if alcUse.nolowthresholdcoding(dxIdx)
+        if alcUse.nolowthresholdcoding(dxIdx)==1
             ses.dx = 'control';
         else
             ses.dx = 'alcuse';
         end
     else
         ses.dx = 'n/a';
-        keyboard
+        %keyboard
     end
     
-    
+    % check persistent alc use
+    alcIdx = find (strcmp(alcUse.subject, sprintf('NCANDA_%s', subjid)) );
+    nlow = sum( alcUse.nolow(alcIdx)==0 );
+    plow = nlow / length(alcIdx);
     
     fprintf(1, '============================================================================================================================================\n');
     fprintf(1, '%d/%d\n', diri, size(dirs,1));
@@ -81,7 +85,7 @@ for diri = 1:length(dirs)
         for atlasi = 1:length(atlases)
             rest = [];
             rest.ses_id = subj;
-            rest.study = 'pnc';
+            rest.study = 'ncsiemens';
             rest.preproc = pipelines{pipei};
             rest.atlas = atlases{atlasi};
 

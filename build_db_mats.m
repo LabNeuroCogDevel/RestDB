@@ -3,7 +3,7 @@
 % this will take a long time. look at redo_study() for just one study
 function build_db_mats()
 
-    DEBUG=0 % petrest will print lots if DEBUG=1
+    DEBUG=0; % petrest will print lots if DEBUG=1
     % ses and rest info as matlab table
     petrest_table 
     save('mats/petrest.mat','allses','allrest')
@@ -22,4 +22,6 @@ function build_db_mats()
     allses.age = cellfun(@(x) x(1), allses.age);
     save('mats/rewrest.mat','allses','allrest')
 
+    ncandarest_table
+    save('mats/ncandarest.mat','allses','allrest')
 end

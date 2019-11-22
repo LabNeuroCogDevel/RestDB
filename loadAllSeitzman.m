@@ -15,6 +15,8 @@ if 1
 
     % load
     size(tbl,1)
+    unique(tbl.study)
+    
     for i = 1:size(tbl,1)
         if mod(i,20)==0
             fprintf(1, '%03d ', i);

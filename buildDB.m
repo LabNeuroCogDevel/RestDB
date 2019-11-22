@@ -1,9 +1,14 @@
 % buildDB -- (re)build database from already generated mat/*rest.mat files
-function buildDB()
+function buildDB(redo)
 %% iniailze mats
 % this would take a long time. done once. dont need to do again
 % ...until there is new data. but maybe just do one of them
-build_db_mats()
+
+if nargin <1, redo=0; end
+
+if redo
+  build_db_mats()
+end
 
 %% open db
 dbcn = sqlite('rest.db');
