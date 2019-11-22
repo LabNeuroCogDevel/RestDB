@@ -13,13 +13,17 @@ all: txt/alltsnr.txt
 	matlab -nodisplay -r "try, build_db_mats(), end; quit()" # mats/*.mat
 	mkstat $@ 'mats/*.mat'
 
+# track all the 4d time series
 .make/ts4d.txt: .make/mats.txt buildDB.m
 	./00_create.bash # runs buildDB.m on build_db_mats.m created mats/*.mat
 	sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' 'select ts4d from rest where  ts4d not like "%chunk%" group by ts4d order by ts4d' | mkifdiff $@
 
+# list all the tsnr directoires that should be stored in the DB
 .make/tsnrdir.txt: .make/ts4d.txt 
 	./gen_tsnr.bash
+	# replace ts name with tsnr: same as $(dirname $f)/tsnr
 	sed 's:\(.*/\).*:\1tsnr/:' .make/ts4d.txt | xargs ls -d 2>/dev/null | mkifdiff $@
 
+# add tsnr values to DB
 txt/alltsnr.txt: .make/tsnrdir.txt
 	./create_gm_tsnr.bash
