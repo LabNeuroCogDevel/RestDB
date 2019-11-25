@@ -1,7 +1,27 @@
 #!/usr/bin/env bash
-i=0
-sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' \
-   'select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d not like "%chunk%" group by ts4d' | 
+
+#
+# generate ${preproc_dir}/tsnr/*txt files for all ts4d niftis in restdb
+# run create_gm_tsnr.bash after
+#
+
+[ $# -ne 1 ] && echo "USAGE: $0 all|rew|cog|ncsiemens|etc" >&2 && exit
+
+RESTDB="/Volumes/Hera/Projects/RestDB/rest.db"
+
+# figure out and check study
+study=$1; shift
+if [[ $study == "all" ]]; then
+   studyquery="%"
+else
+   studies=",$(sqlite3 $RESTDB 'select study from rest group by study'|tr '\n' ',' )"
+   ! [[ $studies =~ ,$study, ]] && echo "unknown study '$study', not in $studies" && exit 1
+   studyquery="$study"
+fi
+
+i=0 # status updates printed to terminal every 500 ts4d files
+sqlite3 $RESTDB -separator ' ' \
+   "select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d not like '%chunk%' and study like '$studyquery' group by ts4d" | 
    # 'select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d like "%ncanda%" group by ts4d' | 
    #'select ts4d, max(study), max(preproc), max(ses_id) from rest where study like "pnc" and preproc like "aroma" and ts4d not like "%chunk%" group by ts4d limit 2' | 
  while read f info; do
@@ -20,7 +40,7 @@ sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' \
     esac
     echo "f: $f R: $Rext f: $std_dir i: $info"
 
-    # rew is 3mm, others are 2.3
+    # rew and ncanda are 3mm, others are 2.3
     [[ $info =~ rew|ncsiemen|ncge ]] && res=3 || res=2.3
 
     mnitemp=$std_dir/mni_icbm152_nlin_asym_09c/mni_icbm152_t1_tal_nlin_asym_09c_${res}mm.nii 
@@ -30,6 +50,7 @@ sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' \
     #[[ $info =~ rew ]] && opts="-g $gm_mask -t $mnitemp"
 
     # we dont need to warp, so give dummpy file (existing template)
+    # `-w` option placates ppf_tsnr's checks, but is not used
     [[ $info =~ "cog aroma" ]] && opts="-f -t $mnitemp -w $mnitemp -g $gm_mask"  
     [[ $info =~ "pnc aroma" ]] && opts="-t $mnitemp -w $mnitemp -g $gm_mask"
     ppf_tsnr $opts -O $(basename $f) $(dirname $f)  || echo "failed on $f"

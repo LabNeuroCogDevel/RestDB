@@ -13,6 +13,10 @@
   2. add to `build_db_mats.m` and save mat into `mats/` with *rest.mat* suffix
   3. mat will be picked up by `buildDB.m`. `ses.study` derived from  mat filename sans *rest.mat* suffix
 
+# Add/update tsnr
+  1. `gen_tsnr.bash $study`       -- generate $preprocdir/tsnr/*txt files for all ts4d niftis in restdb
+  2. `create_gm_tsnr.bash $study` -- parse and add row for all *txt files created ^
+
 # LOG
 20191125
   siemens+ge for ncanda with tsnr
