@@ -171,12 +171,5 @@ end
 allses=struct2table(allses);
 allrest=struct2table(allrest);
 
-    
-        
-
-
-        
-        
-        
-
-        
+% age is cell. extract
+allses.age = cellfun(@(x) x(1), allses.age);

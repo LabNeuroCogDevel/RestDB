@@ -2,6 +2,9 @@
 % has no dependencies on sqlite
 % this will take a long time. look at redo_study() for just one study
 function build_db_mats()
+    % see readme.txt for adding a study
+    % filenames are important:
+    %  expect ${study}rest_table.m and mats/${study}rest.mat
 
     DEBUG=0; % petrest will print lots if DEBUG=1
     % ses and rest info as matlab table
@@ -19,9 +22,12 @@ function build_db_mats()
     save('mats/pncrest.mat','allses','allrest')
 
     rewrest_table 
-    allses.age = cellfun(@(x) x(1), allses.age);
     save('mats/rewrest.mat','allses','allrest')
 
-    ncandarest_table
-    save('mats/ncandarest.mat','allses','allrest')
+    ncsiemensrest_table
+    save('mats/ncsiemensrest.mat','allses','allrest')
+
+    ncgerest_table
+    save('mats/ncgerest.mat','allses','allrest')
+
 end
