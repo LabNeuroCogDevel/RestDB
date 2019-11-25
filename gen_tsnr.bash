@@ -2,6 +2,7 @@
 i=0
 sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' \
    'select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d not like "%chunk%" group by ts4d' | 
+   # 'select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d like "%ncanda%" group by ts4d' | 
    #'select ts4d, max(study), max(preproc), max(ses_id) from rest where study like "pnc" and preproc like "aroma" and ts4d not like "%chunk%" group by ts4d limit 2' | 
  while read f info; do
     # print updates only occastionally
@@ -20,7 +21,7 @@ sqlite3 /Volumes/Hera/Projects/RestDB/rest.db -separator ' ' \
     echo "f: $f R: $Rext f: $std_dir i: $info"
 
     # rew is 3mm, others are 2.3
-    [[ $info =~ rew ]] && res=3 || res=2.3
+    [[ $info =~ rew|ncsiemen|ncge ]] && res=3 || res=2.3
 
     mnitemp=$std_dir/mni_icbm152_nlin_asym_09c/mni_icbm152_t1_tal_nlin_asym_09c_${res}mm.nii 
     gm_mask=$std_dir/mni_icbm152_nlin_asym_09c/mni_icbm152_gm_tal_nlin_asym_09c_${res}mm.nii
