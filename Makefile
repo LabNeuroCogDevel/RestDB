@@ -26,4 +26,4 @@ all: txt/alltsnr.txt
 
 # add tsnr values to DB
 txt/alltsnr.txt: .make/tsnrdir.txt ./create_gm_tsnr.bash
-	./create_gm_tsnr.bash
+	./create_gm_tsnr.bash all
