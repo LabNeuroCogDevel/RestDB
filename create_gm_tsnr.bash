@@ -2,15 +2,18 @@
 roi=gm
 
 
+cnt=0
 
 sqlite3 rest.db 'select ses_id, study, preproc, min(adj_file) from rest group by ses_id, study, preproc' |
 perl -F'\|' -MFile::Basename -slane '$a{dirname($F[3])."\t$F[2]"}=join("\t",@F[0..1]); END{ print "$_\t$a{$_}" for sort keys %a}' | 
-while read dname study ses_id preproc; do
+while read dname preproc ses_id study; do
+   # 20191125 N.B. study and preproc get swapped!?
    [ ! -r $dname/tsnr ] && echo "$dname: no tsnr" >&2 && continue
 
    # reverse sort. call the last one isfinal
    isfinal=""
    for f in $(ls $dname/tsnr/*txt |sort -r); do 
+
       # skip this file -- created in error
       [[ $f =~ usan_size.txt ]] && continue
       tsnrval=$(awk '{print $1}' < $f)
@@ -33,10 +36,16 @@ while read dname study ses_id preproc; do
       # set no prefix to underscore for easier query
       [ -z "$prefix" ] && prefix="_"
       # ouptput matching order of tsnr table
-      echo "$ses_id,$study,$preproc,$isfinal,$roi,$prefix,$tsnrnii,$step,$tsnrval"
-   done
-done |tee txt/alltsnr.txt
+      line="$ses_id,$study,$preproc,$isfinal,$roi,$prefix,$tsnrnii,$step,$tsnrval"
+      echo "$line"
 
+      # report process so we know it's not stalled
+      [ $(( $cnt % 100)) -eq 0 ] && echo "[$(date)] $cnt $line" >&2
+      let ++cnt
+   done
+done > txt/alltsnr.txt
+
+# update in database
 cat <<EOF  | sqlite3 rest.db 
 delete from tsnr;
 .mode csv
@@ -44,5 +53,9 @@ delete from tsnr;
 EOF
 
 # check on it
+echo
+echo "study, preproc, count:"
 sqlite3 rest.db 'select study,preproc,count(*) from tsnr  group by study,preproc limit 10 ;'
+echo
+echo "tsnr:"
 sqlite3 rest.db 'select * from tsnr order by tsnr desc limit 10;'
