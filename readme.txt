@@ -6,8 +6,16 @@
   2. add atlas names to atlas_list.m
   4. run `make` (remake mat files, populate db: ./00_create.bash; calc tsnr: gen_tsnr.bash)
 
-# LOG
+# Add study
+ expect `${study}rest_table.m` and `mats/${study}rest.mat`
 
+  1. create copy of a `*_table.m`
+  2. add to `build_db_mats.m` and save mat into `mats/` with *rest.mat* suffix
+  3. mat will be picked up by `buildDB.m`. `ses.study` derived from  mat filename sans *rest.mat* suffix
+
+# LOG
+20191125
+  siemens+ge for ncanda with tsnr
 20190107
   added atlas_list.m to list all atlases. used by *rest_table.m
 20181002
