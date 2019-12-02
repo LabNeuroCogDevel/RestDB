@@ -1,7 +1,7 @@
 % load all gsr
 
 atlas = 'wb1038';
-pipeline = 'aroma';
+pipeline = 'aroma_gsr';
 study = '%';
 %study = 'cog OR pet OR rew';
 
@@ -15,6 +15,8 @@ if 1
 
     % load
     size(tbl,1)
+    unique(tbl.study)
+
     for i = 1:size(tbl,1)
         if mod(i,20)==0
             fprintf(1, '%03d ', i);
@@ -33,7 +35,13 @@ if 1
             lowerInds = find(tril(ones(nROI), -1));
             r_vec = nan*ones(length(lowerInds), size(tbl,1));
         end
+
         thisrArr = table2array(thisr);
+
+        if (size(thisrArr,1) ~= size(thisrArr,2)) | (size(thisrArr,1) ~= size(r,1)) | (size(thisrArr,2) ~= size(r,2))
+            thisrArr = nan(size(r,1), size(r,2));
+        end
+
         r(:,:,i) = thisrArr;
         r_vec(:,i) = thisrArr(lowerInds);
         

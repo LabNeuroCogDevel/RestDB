@@ -12,7 +12,7 @@ alcUse = readtable('/Volumes/Zeus/preproc/scripts_finn/ncanda/nolowinformation_N
 %demo = readtable('/Volumes/Zeus/NCANDA_Behavioral/Data/NCANDA_RELEASE_3Y_REDCAP_MEASUREMENTS_V01/summaries/redcap/demographics.csv', 'Delimiter', ',','ReadVariableNames',true);
 demo = readtable('/Volumes/Hera/Raw/Datasets/NCANDA/followup_4y/NCANDA_RELEASE_4Y_REDCAP_MEASUREMENTS_V02/summaries/redcap/demographics.csv', 'Delimiter', ',','ReadVariableNames',true);
 
-dirs = dir(fullfile('/Volumes/Hera/preproc/ncanda_siemens/MHRest_ncanda/S*_*'));
+dirs = dir(fullfile('/Volumes/Hera/preproc/ncanda_*/MHRest_ncanda/S*_*'));
 
 allses=[];
 allrest=[];
@@ -24,6 +24,10 @@ visitnames = {'baseline', 'followup_1y', 'followup_2y', 'followup_3y', 'followup
 for diri = 1:length(dirs)
     thisdir = dirs(diri);
 
+    dirparts = strsplit(thisdir.folder, '/');
+    studydir = dirparts{5};
+    thisstudy = strrep(studydir, 'anda_', '');
+    
     subj = thisdir.name;
     
     parts = strsplit(subj, '_');
@@ -85,7 +89,7 @@ for diri = 1:length(dirs)
         for atlasi = 1:length(atlases)
             rest = [];
             rest.ses_id = subj;
-            rest.study = 'ncsiemens';
+            rest.study = thisstudy;
             rest.preproc = pipelines{pipei};
             rest.atlas = atlases{atlasi};
 

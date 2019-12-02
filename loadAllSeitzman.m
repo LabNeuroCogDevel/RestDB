@@ -53,10 +53,10 @@ if 1
     tbl(badidx,:) = [];
     r(:,:,badidx) = [];
 
-    save(sprintf('saved_data/query_%s_%s_%s_%s.mat', study, pipeline, atlas, datestr(now, 'yyyymmdd')), 'tbl', 'r', 'r_vec', 'lowerInds','atlas','pipeline','study');
+    save(sprintf('saved_data/query_%s_%s_%s_%s.mat', study, pipeline, atlas, datestr(now, 'yyyymmdd')), 'tbl', 'r', 'r_vec', 'lowerInds','atlas','pipeline','study','-v7.3');
 
 else
-    load(sprintf('saved_data/query_%s_%s_%s_%s.mat', study, pipeline, atlas, '20180531'), 'tbl', 'r');
+    load(sprintf('saved_data/query_%s_%s_%s_%s.mat', study, pipeline, atlas, '20180531'), 'tbl', 'r','-v7.3');
 end
 
 

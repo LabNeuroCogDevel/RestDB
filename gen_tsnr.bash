@@ -2,8 +2,7 @@
 
 #
 # generate ${preproc_dir}/tsnr/*txt files for all ts4d niftis in restdb
-# run create_gm_tsnr.bash after
-#
+# run tsnr_gm_to_txt.bash after
 
 [ $# -ne 1 ] && echo "USAGE: $0 all|rew|cog|ncsiemens|etc" >&2 && exit
 

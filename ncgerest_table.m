@@ -95,7 +95,7 @@ for diri = 1:length(dirs)
 
             switch pipelines{pipei}
                 case 'aroma'
-                    scandir = fullfile('/Volumes/Hera/preproc/ncanda_siemens/MHRest_ncanda',subj);
+                    scandir = fullfile('/Volumes/Hera/preproc/ncanda_ge/MHRest_ncanda',subj);
                     censorFile = 'censor_fd0.3_run5.1D';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';
@@ -104,7 +104,7 @@ for diri = 1:length(dirs)
                     fourdFile = fullfile(scandir, 'brnaswudktm0_func_5.nii.gz');
 
                 case 'aroma_gsr'
-                    scandir = fullfile('/Volumes/Hera/preproc/ncanda_siemens/MHRest_ncanda',subj);
+                    scandir = fullfile('/Volumes/Hera/preproc/ncanda_ge/MHRest_ncanda',subj);
                     censorFile = 'censor_fd0.3_run5.1D';
                     fdFile = 'motion_info/fd.txt';
                     dvarsFile = 'motion_info/dvars.txt';

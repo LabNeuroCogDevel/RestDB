@@ -33,6 +33,7 @@ function t = get_rest(dbcn,varargin)
 
         sqlquery = [sqlquery ' where ' whereclause];
   end
+  sqlquery
   ses = fetch(dbcn,sqlquery);
   if isempty(ses) || all(size(ses)==0)
       ses = cell(0,length(varnames)+5);

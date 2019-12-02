@@ -43,6 +43,12 @@ for diri = 1:length(dirs)
     ses.age = age;
     ses.sex = gender;
     ses.dx = 'control';
+
+%    if ~strcmp(gender, 'F') & ~strcmp(gender, 'M') & ~isempty(gender)
+%	ses
+%	keyboard
+%    end
+
     
     fprintf(1, '============================================================================================================================================\n');
     fprintf(1, '%d/%d\n', diri, length(dirs));

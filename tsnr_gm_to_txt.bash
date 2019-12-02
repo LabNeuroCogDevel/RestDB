@@ -66,27 +66,3 @@ while read dname preproc ses_id study; do
       let ++cnt || continue
    done
 done > txt/${study}tsnr.txt
-
-# update in database
-cat <<EOF  | sqlite3 rest.db 
-delete from tsnr where study like '$studyquery';
-.mode csv
-.import txt/${study}tsnr.txt tsnr
-EOF
-
-# keep alltsnr.txt up-to-date
-if [[ $study != all ]]; then
-   #grep -v ",$study," txt/alltsnr.txt | sponge txt/alltsnr.txt
-   cp txt/alltsnr.txt{,.bak}
-   grep -v ",$study," txt/alltsnr.txt.bak > txt/alltsnr.txt
-   cat txt/${study}tsnr.txt >> txt/alltsnr.txt
-fi
-
-# check on it
-echo
-echo "study, preproc, count:"
-sqlite3 rest.db "select study,preproc,count(*) from tsnr  group by study,preproc having study like '$studyquery' limit 10 ;"
-echo
-echo "tsnr:"
-sqlite3 rest.db "select * from tsnr where study like '$studyquery' order by tsnr, ses_id desc limit 10;"
-

@@ -17,12 +17,14 @@ mats/%rest.mat: redo_study.m %rest_table.m
 	matlab -nodisplay -r "try, redo_study($*), end; quit()"
 
 # make intermatate file to incase redo doesn't add any new ts4d rows
+# N.B. *dbstat.txt is removed by make b/c it's a secondary depends. use ".SECONDARY:" to keep?
 .make/%_dbstat.txt: mats/%rest.mat
 	sqlite3 rest.db -separator ' ' "select ts4d from rest where ts4d not like '%chunk%' and study like '$*' group by ts4d order by ts4d" | mkifdiff $@
 # tsnr if db state has changed
 txt/%tsnr.txt: .make/%_dbstat.txt
 	./gen_tsnr.bash $*
-	./create_gm_tsnr.bash $*
+	./tsnr_gm_to_txt.bash $*
+	./tsnr_txt_to_db.bash $*
 ###########
 
     
@@ -46,6 +48,7 @@ txt/%tsnr.txt: .make/%_dbstat.txt
 	sed 's:\(.*/\).*:\1tsnr/:' .make/ts4d.txt | xargs ls -d 2>/dev/null | mkifdiff $@
 
 # add tsnr values to DB
-# NB. to update just one study: ./create_gm_tsnr.bash $study
-txt/alltsnr.txt: .make/tsnrdir.txt ./create_gm_tsnr.bash
-	./create_gm_tsnr.bash all
+# NB. to update just one study: ./tsnr_gm_to_txt.bash $study
+txt/alltsnr.txt: .make/tsnrdir.txt ./tsnr_gm_to_txt.bash
+	./tsnr_gm_to_txt.bash all
+	./tsnr_txt_to_db.bash all
