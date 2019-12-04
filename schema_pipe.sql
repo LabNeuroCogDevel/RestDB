@@ -1,4 +1,6 @@
-
+-- improved schema with atlas info separated from pipeline metrics (fd, dvars, sp) 
+-- would need to rewrite matlab *.mat files to insert
+-- created 20190502, still unimplemented 20191204
 
 -- session info
 create table ses (
@@ -39,6 +41,11 @@ create table pipe (
     dvars_n_cens integer,
     dvars_path text,
 
+    -- mean spike percentage (wavelet despiking)
+    sp_mean float,
+    sp_path text,
+
+
     -- connect to ses
     foreign key (ses_id, study) references ses (ses_id, study)
 );
@@ -53,6 +60,22 @@ create table rest (
 
     -- location of corr mat
     adj_file text, 
+
+    -- relation to preproc table
+    foreign key (ses_id, study, prepoc) references pipe (ses_id, study, preproc)
+);
+
+create table tsnr (
+    ses_id varchar(50) not null,
+    study varchar(10),
+    preproc varchar(20),
+
+    isfinal boolean default false,
+    roi text, -- default gm
+    prefix text,
+    input text,
+    step numeric,
+    tsnr  numeric,
 
     -- relation to preproc table
     foreign key (ses_id, study, prepoc) references pipe (ses_id, study, preproc)

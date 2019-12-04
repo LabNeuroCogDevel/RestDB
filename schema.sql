@@ -45,6 +45,10 @@ create table rest (
     dvars_n_cens integer,
     dvars_path text,
 
+    -- mean spike percentage (wavelet despiking)
+    sp_mean float,
+    sp_path text,
+
     -- relation to session table
     foreign key (ses_id) references ses (ses_id)
 );
