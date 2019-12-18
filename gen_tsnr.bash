@@ -20,7 +20,14 @@ fi
 
 i=0 # status updates printed to terminal every 500 ts4d files
 sqlite3 $RESTDB -separator ' ' \
-   "select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d not like '%chunk%' and study like '$studyquery' group by ts4d" | 
+   "select ts4d, max(study), max(preproc), max(ses_id)
+   from rest r
+   natural left join tsnr t
+   where
+   ts4d not like '%chunk%' and
+   study like '$studyquery' and
+   tsnr is null
+   group by ts4d" | 
    # 'select ts4d, max(study), max(preproc), max(ses_id) from rest where  ts4d like "%ncanda%" group by ts4d' | 
    #'select ts4d, max(study), max(preproc), max(ses_id) from rest where study like "pnc" and preproc like "aroma" and ts4d not like "%chunk%" group by ts4d limit 2' | 
  while read f info; do

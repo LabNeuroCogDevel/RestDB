@@ -16,7 +16,7 @@ dirs = [ dir(fullfile('/Volumes/Zeus/preproc/petrest_*/brnsuwdktm_rest/1*')); ..
          dir(fullfile('/Volumes/Zeus/preproc/petrest_dtbz/MHRest_FM_ica/1*')) ...
 ];
 fprintf('== running petrest_table for %d folders and %d atlases ==\n',...
-    length(dirs), length(atlases))
+    length(dirs), length(atlases));
 
 allses=[];
 allrest=[];
@@ -24,20 +24,20 @@ allrest=[];
 % load ages
 %agesTable = readtable('/Volumes/Phillips/mMR_PETDA/scripts/txt/subjinfo_agesexids.csv', 'Delimiter', '\t','ReadVariableNames',true);
 agesTable = readtable('/Volumes/Phillips/mMR_PETDA/scripts/merged_data.csv', 'Delimiter', ',','ReadVariableNames',true);
-agesTable.lunaid = cellfun(@str2double, agesTable.lunaid) % 20191107 -- at somepoint these became strings. need as num for comp below
+agesTable.lunaid = cellfun(@str2double, agesTable.lunaid); % 20191107 -- at somepoint these became strings. need as num for comp below
 
 %%
 for diri = 1:length(dirs)
     thisdir = dirs(diri);
     if exist('DEBUG','var') && DEBUG==1
-        fprintf('Looking to #%d: %s/%s\n', diri, thisdir.folder,thisdir.name)
+        fprintf('Looking to #%d: %s/%s\n', diri, thisdir.folder,thisdir.name);
     end
 
     % Load session info into ses
     subjdate = thisdir.name;
     sdparts = strsplit(subjdate, '_');
     if length(sdparts) < 2
-        warning('bad folder name %s/%s', thisdir.folder, thisdir.name)
+        warning('bad folder name %s/%s', thisdir.folder, thisdir.name);
         continue
     end
     subj = sdparts{1};

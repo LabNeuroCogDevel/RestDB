@@ -54,12 +54,13 @@ create table pipe (
 create table rest (
     -- likely subj_ymd
     ses_id varchar(50) not null,
-    study varchar(10),
-    preproc varchar(20),
-    atlas varchar(10),
+    study varchar(10) not null,
+    preproc varchar(20) not null,
 
+    -- things specific to this atlas roi extraction
+    atlas varchar(10) not null,
     -- location of corr mat
-    adj_file text, 
+    adj_file text not null, 
 
     -- relation to preproc table
     foreign key (ses_id, study, prepoc) references pipe (ses_id, study, preproc)

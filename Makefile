@@ -14,7 +14,7 @@ all: txt/alltsnr.txt
 # rest matlab structure comes from the corresponding *rest_table.m
 # e.g. rewrest_table.m -> mats/rewrest.mat => rest.db: rest.ts4d, study='rew'
 mats/%rest.mat: redo_study.m %rest_table.m
-	matlab -nodisplay -r "try, redo_study($*), end; quit()"
+	matlab -nodisplay -r "try, redo_study('$*'), end; quit()"
 
 # make intermatate file to incase redo doesn't add any new ts4d rows
 # N.B. *dbstat.txt is removed by make b/c it's a secondary depends. use ".SECONDARY:" to keep?
@@ -52,3 +52,7 @@ txt/%tsnr.txt: .make/%_dbstat.txt
 txt/alltsnr.txt: .make/tsnrdir.txt ./tsnr_gm_to_txt.bash
 	./tsnr_gm_to_txt.bash all
 	./tsnr_txt_to_db.bash all
+
+txt/update_sp.txt: add_sp.bash update_sp.sql
+	./add_sp.bash
+	# run in script: sqlite3 rest.db < update_sp.sql

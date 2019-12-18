@@ -18,6 +18,8 @@
   2. `create_gm_tsnr.bash $study` -- parse and add row for all *txt files created ^
 
 # LOG
+20191204
+  add spike percentage for wavelet pipelines
 20191125
   siemens+ge for ncanda with tsnr
 20190107

@@ -7,6 +7,14 @@
 %  get_rest(dbcn,'study like "cog" and preproc like "aroma"') % cog aroma
 %
 function t = get_rest(dbcn,varargin)
+
+  % TODO: dont require dbcn
+  % if nargin == 0
+  %  dcbn=sqlite('rest.db');
+  % elsif strmatch(class(dbcn),'sqlite??')
+  %  dcbn=sqlite('rest.db');
+  %  varargin={dbcn,varargin{:})
+  % end
   
   varnames = {'ses_id','study','preproc','atlas','ntr','ts_file',...
               'adj_file',...
@@ -18,6 +26,7 @@ function t = get_rest(dbcn,varargin)
   sqlquery = ['select ',...
              'ses.subj, ses.age, ses.sex, ses.dx, '...
              restselect ,...
+             ' case when rest.sp_mean > 0 then rest.sp_mean else -1 end, ',...
              ' case when tsnr.tsnr > 0 then tsnr.tsnr else -1 end',...
              ' from rest natural join ses', ...
              ' left join tsnr on tsnr.isfinal=1 and tsnr.ses_id = rest.ses_id and tsnr.preproc = rest.preproc and tsnr.study = rest.study'];
@@ -39,5 +48,5 @@ function t = get_rest(dbcn,varargin)
       ses = cell(0,length(varnames)+5);
   end
   %ses
-  t = cell2table(ses,'VariableNames',{'subj', 'age','sex','dx', varnames{:}, 'tsnr'});  
+  t = cell2table(ses,'VariableNames',{'subj', 'age','sex','dx', varnames{:},'sp_mean', 'tsnr'});  
 end

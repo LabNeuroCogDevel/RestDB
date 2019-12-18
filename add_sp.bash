@@ -4,7 +4,7 @@ trap 'e=$?; [ $e -ne 0 ] && echo "$0 exited in error"' EXIT
 cd $(dirname $0)
 
 #
-# add SP fields to db
+# add SP fields to db only for where sp_mean is null
 #  20191204WF  init
 
 # sp_mean and sp_path are in schema.sql, but were not in actuall db
@@ -14,6 +14,7 @@ sqlite3 rest.db 'select distinct ts4d from rest
     where sp_mean is null and
     ts4d not like "%snip%" and
     study not like "%cog%" and 
+    study not like "%pnc%" and 
     study not like "%rew%"' |while read ts4d; do
     sp_path=$(find $(dirname $ts4d) -maxdepth 1 -type f -iname '*_spike_percentage.txt' |sed 1q)
     [ -z "$sp_path" -o ! -s "$sp_path" ] && echo "no spike_percentage for $ts4d" >&2 &&  continue
@@ -25,6 +26,5 @@ sqlite3 rest.db 'select distinct ts4d from rest
     [ $(( $cnt % 100)) -eq 0 ] && echo "[$(date)] $cnt $ts4d" >&2
 done > txt/update_sp.txt
 # send updates to sql
-#sqlite3 rest.db < txt/update_sp.sql
 sqlite3 rest.db < update_sp.sql
 

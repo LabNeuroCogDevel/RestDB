@@ -1,7 +1,7 @@
 create temporary table spt(
-    ts4d text, 
     sp_mean float,
-    sp_path text);
+    sp_path text,
+    ts4d text);
 
 .mode csv
 .import txt/update_sp.txt spt

@@ -4,7 +4,7 @@
 function study_to_db(dbcn,study)
   %% find mat file representing study
   f=['mat/' study 'rest.mat'];
-  if ~exists(f,'file')
+  if ~exist(f,'file')
       error('cannot find study file %s\n',f)
   end
   

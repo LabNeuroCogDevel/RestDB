@@ -25,17 +25,39 @@ for diri = 1:length(dirs)
     subj = sdparts{1};
     vdate = sdparts{2};
     
+    fprintf(1, '============================================================================================================================================\n');
+    fprintf(1, '%d/%d\n', diri, length(dirs));
+
     % get age
-    [s, r] = system(sprintf('/Volumes/Phillips/CogRest/scripts/getAge.sh %s %s 2>/dev/null', subj, vdate));
-    if s == 0 && isnumeric(str2double(r))
-        ageParts = strsplit(r, {sprintf('\n'), ' '}); % in case it returns more than one value
-        age = str2double(ageParts{1});
-        gender = ageParts{2}; %strcmp(ageParts{2}, 'M');
-    else
-        warning('Could not load age for %s @ %s', subj, vdate);
-        age = NaN;
-        gender = '';
-    end
+    ntries = 0;
+    while 1
+	    pause(.2);
+	    fprintf(1,  '/Volumes/Phillips/CogRest/scripts/getAge.sh %s %s 2>/dev/null \n', subj, vdate)
+	    [s, r] = system(sprintf('/Volumes/Phillips/CogRest/scripts/getAge.sh %s %s 2>/dev/null', subj, vdate));
+
+	    if s == 0 && isnumeric(str2double(r))
+	        ageParts = strsplit(r, {sprintf('\n'), ' '}); % in case it returns more than one value
+	        age = str2double(ageParts{1});
+	        gender = ageParts{2}; %strcmp(ageParts{2}, 'M');
+
+			age
+			gender
+
+		if ~isnan(age) & ~isempty(gender) && length(gender) == 1
+			break;
+		end
+	    end
+
+	    if ntries >= 3
+	        warning('Could not load age for %s @ %s', subj, vdate);
+		age = NaN;
+		gender =  '';
+		break;
+	    end
+
+	    ntries = ntries + 1;
+
+   end
 
     ses = [];
     ses.ses_id = subjdate;
@@ -50,8 +72,6 @@ for diri = 1:length(dirs)
 %    end
 
     
-    fprintf(1, '============================================================================================================================================\n');
-    fprintf(1, '%d/%d\n', diri, length(dirs));
     ses
     %f = fieldnames(ses); for fi = 1:length(f); fprintf(1, '%s: %s\n', f{fi}, class(ses.(f{fi}))); end; return
     

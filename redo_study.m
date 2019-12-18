@@ -6,7 +6,7 @@
 function redo_study(study)
     script=[study 'rest_table.m'];
     outfile=['mats/' study 'rest.mat'];
-    if ~exist(script,file)
+    if ~exist(script, 'file')
         error('no script for %s: %s',study,script)
     end
     %% run creation script and save output
