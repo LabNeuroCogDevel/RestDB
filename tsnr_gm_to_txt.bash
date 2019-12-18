@@ -25,6 +25,8 @@ fi
 roi=gm # expect all to be gray matter masked
 cnt=0  # update status every 100 
 
+# 10124_20060803|cog|mhrestbase|/Volumes/Phillips/CogRest/subjs/10124_20060803/preproc/10124_20060803_GordonHarOx_adj.txt
+# /Volumes/Hera/preproc/cog_task/rest_spikemin/10124_20070829/snip	aroma	10124_20070829	cog
 sqlite3 rest.db "select ses_id, study, preproc, min(adj_file) from rest group by ses_id, study, preproc having study like '$studyquery'" |
 perl -F'\|' -MFile::Basename -slane '$a{dirname($F[3])."\t$F[2]"}=join("\t",@F[0..1]); END{ print "$_\t$a{$_}" for sort keys %a}' | 
 while read dname preproc ses_id study; do
@@ -40,7 +42,7 @@ while read dname preproc ses_id study; do
       tsnrval=$(awk '{print $1}' < $f)
 
       # skip global signal if aroma (and not aroma_gsr), and file is gsr file
-      [[ $study =~ aroma$ && $f =~ 'bgr' ]] && continue
+      [[ $preproc =~ aroma$ && $f =~ bgr ]] && continue
 
       nprefix=$(basename $f) # 11-bgrnaswdktm_func_5.txt
       step=${nprefix%-*}    # 11
@@ -53,6 +55,8 @@ while read dname preproc ses_id study; do
       [ ! -r "$tsnrnii" ] && tsnrnii=$tsnr_d/${prefix}_tsnr.nii.gz
       [ ! -r "$tsnrnii" ] && echo "cannot read $tsnrnii" >&2 && continue
 
+      # when final is empyt we just started. so file is final
+      # when final is not empty, we've already seen a larger prefix
       [ -z "$isfinal" ] && isfinal=1 || isfinal=0
 
       # set no prefix to underscore for easier query
